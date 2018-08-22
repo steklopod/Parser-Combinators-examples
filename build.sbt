@@ -1,4 +1,4 @@
-name := "LexerParser"
+name := "SimpleParser"
 
 version := "0.1"
 
