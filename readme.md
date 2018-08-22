@@ -2,7 +2,7 @@
 
 В данном проекте собраны простые примеры для начального уровня понимания.
 
-**Парсером** называется часть программы `строит более сложные структуры данных`, которая из линейной последовательности простых 
+**Парсером** называется часть программы, которая `строит более сложные структуры данных` из линейной последовательности простых 
 данных (символов, лексем, байтов) с учетом некоторой грамматики, неявно содержащиеся в исходной последовательности. 
 Это может быть разбор конфигурационных файлов, разбор исходного кода на каком-либо языке программирования, 
 разбор проблемно-ориентированных языков (DSL), чтение сложных и не очень форматов данных (XML, PostScript), 
@@ -98,7 +98,7 @@
 ```scala
   object TestSimpleParser extends SimpleParser {
     def main(args: Array[String]) = {    
-      parse(word, "johnny come lately") match {
+      parse(word, "дима придет поздно") match {
         case Success(matched,_) => println(matched)
         case Failure(msg,_) => println("FAILURE: " + msg)
         case Error(msg,_) => println("ERROR: " + msg)
@@ -186,7 +186,7 @@
 ```scala
     object TestSimpleParser extends SimpleParser {
       def main(args: Array[String]) = {
-        parse(freq, "johnny 121") match {
+        parse(freq, "дима 121") match {
           case Success(matched,_) => println(matched)
           case Failure(msg,_) => println("FAILURE: " + msg)
           case Error(msg,_) => println("ERROR: " + msg)
@@ -209,7 +209,11 @@
     Слово <дима> встречается с частотой 121
 ```
 
-На данный момент мы показали достаточное количество техник для парсера, чтобы начать работу и сделать что-то полезное. 
+На данный момент мы показали достаточное количество техник для парсера, чтобы начать работу и сделать что-то полезное.
+Теперь можно приступить к другим примерам. 
+
+* => [Далее](https://github.com/steklopod/Parser-Combinators-examples/blob/master/src/main/resources/docs/p01_FirstExample.md)
 
 [Справка по регулярным выражениям](https://ru.wikibooks.org/wiki/Регулярные_выражения)
+
 [Переведено мной отсюда](http://www.scala-lang.org/files/archive/api/current/scala-parser-combinators/scala/util/parsing/combinator/Parsers$Parser.html#%5E%5E%5BU%5D(f:T=%3EU):Parsers.this.Parser%5BU%5D)
