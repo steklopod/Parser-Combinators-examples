@@ -1,4 +1,4 @@
-package ru.steklopod
+package ru.steklopod.basics
 
 import scala.util.parsing.combinator.RegexParsers
 

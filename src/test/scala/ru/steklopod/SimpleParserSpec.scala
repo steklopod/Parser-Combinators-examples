@@ -1,6 +1,7 @@
 package ru.steklopod
 
 import org.scalatest.{FunSuite, Matchers}
+import ru.steklopod.basics.SimpleParser
 
 class SimpleParserSpec extends FunSuite with Matchers{
 
