@@ -96,43 +96,38 @@ object Calculator extends ReversePolishCalculator with App {
 
 <!-- code -->
 ```scala
-    import scala.util.parsing.combinator._
+    import scala.util.parsing.combinator.JavaTokenParsers
     
     trait Maths {
       def add(x: Float, y: Float) = x + y
       def sub(x: Float, y: Float) = x - y
       def mul(x: Float, y: Float) = x * y
-      def div(x: Float, y: Float) = if (y > 0) (x / y) else 0.0f
+      def div(x: Float, y: Float) = if (y > 0) x / y else 0.0f
     }
-
+    
     class ReversePolishCalculator extends JavaTokenParsers with Maths {
-
-      def expr:   Parser[Float] = rep(term ~ operator) ^^ {
-        // match a list of term~operator
-        case terms =>
-          // Each operand will be placed on the stack, and pairs will be popped off for each operation,
-          // replacing the pair with the result of the operation. Calculation ends when the final operator
-          // is applied to all remaining operands
-          var stack  = List.empty[Float]
-          // Remember the last operation performed, default to addition
-          var lastOp: (Float, Float) => Float = add
-          terms.foreach(t =>
-            // match on the operator to perform the appropriate calculation
-            t match {
-              // append the operands to the stack, and reduce the pair at the top using the current operator
-              case nums ~ op => lastOp = op; stack = reduce(stack ++ nums, op)
-            }
-          )
-          // Apply the last operation to all remaining operands
-          stack.reduceRight((x, y) => lastOp(y, x))
+    
+      // Каждый операнд будет помещен в стек, и пары будут удалены для каждой операции, заменяя пару результатом операции.
+      // Расчет заканчивается, когда конечный оператор применяется ко всем оставшимся операндам
+      def expr: Parser[Float] = rep(term ~ operator) ^^ { case terms =>
+        var stack = List.empty[Float]
+        var lastOp: (Float, Float) => Float = add // Запоминает последнюю выполненную операцию, по умолчанию добавление
+        terms.foreach { case nums ~ op => lastOp = op;
+          stack = reduce(stack ++ nums, op)
+        }
+        // Применяет последнюю операцию ко всем оставшимся операндам
+        stack.reduceRight((x, y) => lastOp(y, x))
       }
-      // A term is N factors
+    
       def term: Parser[List[Float]] = rep(factor)
-      // A factor is either a number, or another expression (wrapped in parens), converted to Float
+    
+      // Фактором является либо число, либо другое выражение (завернутое в parens), преобразованное в Float
       def factor: Parser[Float] = num | "(" ~> expr <~ ")" ^^ (_.toFloat)
-      // Converts a floating point number as a String to Float
+    
+      // Преобразует число с плавающей запятой из String в Float
       def num: Parser[Float] = floatingPointNumber ^^ (_.toFloat)
-      // Parses an operator and converts it to the underlying function it logically maps to
+    
+      // Разбирает оператор и преобразует его в базовую функцию, которую он логически отображает на
       def operator: Parser[(Float, Float) => Float] = ("*" | "/" | "+" | "-") ^^ {
         case "+" => add
         case "-" => sub
@@ -140,28 +135,22 @@ object Calculator extends ReversePolishCalculator with App {
         case "/" => div
       }
     
-      // Reduces a stack of numbers by popping the last pair off the stack, applying op, and pushing the result
+      // Уменьшает стек чисел, выбирая последнюю пару из стека, применяя `op` и добавляет в результат
       def reduce(nums: List[Float], op: (Float, Float) => Float): List[Float] = {
-        // Reversing the list lets us use pattern matching to destructure the list safely
+        // Смена направления списка позволяет нам использовать сопоставление с образцом для безопасного удаления списка
         val result = nums.reverse match {
-          // Has at least two numbers at the end
           case x :: y :: xs => xs ++ List(op(y, x))
-          // List of only one number
-          case List(x)      => List(x)
-          // Empty list
-          case _            => List.empty[Float]
+          case List(x) => List(x)
+          case _ => List.empty[Float]
         }
         result
       }
     }
     
-    object Calculator extends ReversePolishCalculator {
-      def main(args: Array[String]) {
-        println("input: " + args(0))
-        println("result: " + calculate(args(0)))
-      }
+    object Calculator extends ReversePolishCalculator with App {
+      val result = calculate("3 4 - 5 + 2 *") //3 - 4 + 5 * 2
+      println(s"Результат:  $result")
     
-      // Parse an expression and return the calculated result as a String
       def calculate(expression: String) = parseAll(expr, expression)
     }
 ```
