@@ -11,6 +11,8 @@ trait Maths {
 
 class ReversePolishCalculator extends JavaTokenParsers with Maths {
 
+  def calculate(expression: String) = parseAll(expr, expression)
+
   // Каждый операнд будет помещен в стек, и пары будут удалены для каждой операции, заменяя пару результатом операции.
   // Расчет заканчивается, когда конечный оператор применяется ко всем оставшимся операндам
   def expr: Parser[Float] = rep(term ~ operator) ^^ { case terms =>
@@ -54,6 +56,4 @@ class ReversePolishCalculator extends JavaTokenParsers with Maths {
 object Calculator extends ReversePolishCalculator with App {
   val result = calculate("3 4 - 5 + 2 *") //3 - 4 + 5 * 2
   println(s"Результат:  $result")
-
-  def calculate(expression: String) = parseAll(expr, expression)
 }
